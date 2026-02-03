@@ -49,3 +49,16 @@ li {
     padding: 10px;
   }
 }
+li button {
+  margin-left: 10px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+li button:hover {
+  background: #c0392b;
+}
