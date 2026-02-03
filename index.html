@@ -2,18 +2,25 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Inventario Pizzería</title>
+  <title>Inventario Pizzería Benioli</title>
   <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
 </head>
 <body>
 
-<h2>🍕 Inventario Pizzería Benioli</h2>
+<h1>🍕 Inventario Pizzería Benioli</h1>
 
+<!-- AGREGAR PRODUCTO -->
 <input type="text" id="producto" placeholder="Producto">
 <input type="number" id="cantidad" placeholder="Cantidad">
-<input type="text" id="categoria" placeholder="Categoría">
 
+<!-- 🔹 UNIDAD DE MEDIDA (AGREGADO) -->
+<select id="unidad">
+  <option value="unidad">Unidad</option>
+  <option value="kg">Kg</option>
+  <option value="ml">Ml</option>
+</select>
+
+<input type="text" id="categoria" placeholder="Categoría">
 <button id="btnAgregar">Agregar producto</button>
 
 <input type="text" id="buscar" placeholder="Buscar producto">
@@ -22,13 +29,14 @@
 
 <hr>
 
-<h3>🍕 Venta de Pizza</h3>
+<!-- VENTA DE PIZZA -->
+<h2>🍕 Venta de Pizza</h2>
+
 <select id="tipoPizza">
   <option value="jamon">Jamón</option>
-   <option value="hongonada">Hongonada</option>
-   <option value="extravagante">Extravagante</option>
-   <option value="caseraespecial">Casera Especial</option>
-   <option value="hawaiana">Hawaiana</option>
+  <option value="extravagante">Extravagante</option>
+  <option value="hawaiana">Hawaiana</option>
+  <option value="caseraespecial">Casera Especial</option>
 </select>
 
 <button id="btnVender">Vender pizza</button>
@@ -37,27 +45,17 @@
 
 <hr>
 
-<h3>📊 Reporte</h3>
+<!-- REPORTE -->
+<h2>📊 Reporte</h2>
 <button id="btnReporte">Ver reporte</button>
 <ul id="reporte"></ul>
 
-</body>
-</html>
-
-<select id="unidad">
-  <option value="">Unidad</option>
-  <option value="kg">Kg</option>
-  <option value="ml">ml</option>
-  <option value="unidad">Unidad</option>
-</select>
-
-<select id="tipoPizza">
-  <option value="Jamón">Jamón</option>
-  <option value="Extravagante">Extravagante</option>
-  <option value="Hawaiana">Hawaiana</option>
-  <option value="CaseraEspecial">Casera Especial</option>
-</select>
-
 <hr>
+
+<!-- 🔹 NAVEGACIÓN A OTRAS PÁGINAS (AGREGADO) -->
 <a href="inventario.html">📦 Ver inventario completo</a><br>
 <a href="ventas.html">🍕 Ver pizzas vendidas</a>
+
+<script src="script.js"></script>
+</body>
+</html>
