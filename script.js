@@ -1,51 +1,56 @@
+// ===============================
+// DATOS
+// ===============================
 let inventario = JSON.parse(localStorage.getItem("inventario")) || [];
 let ventas = JSON.parse(localStorage.getItem("ventas")) || [];
 
+// 🔹 RECETAS CORREGIDAS
 const recetas = {
-  jamon: {
-    Harina: 200,
-    Queso: 150,
-    Salsa: 100
-  },
-  extravagante: {
-    Harina: 250,
-    Queso: 180,
-    Salsa: 120
-  },
-  hawaiana: {
-    Harina: 200,
-    Queso: 150,
-    Salsa: 100
-  },
-  caseraespecial: {
-    Harina: 220,
-    Queso: 160,
-    Salsa: 110
-  }
+  jamon: [
+    { producto: "Harina", cantidad: 0.2, unidad: "kg" },
+    { producto: "Queso", cantidad: 0.15, unidad: "kg" },
+    { producto: "Salsa", cantidad: 150, unidad: "ml" }
+  ],
+  extravagante: [
+    { producto: "Harina", cantidad: 0.2, unidad: "kg" },
+    { producto: "Queso", cantidad: 0.2, unidad: "kg" },
+    { producto: "Salsa", cantidad: 200, unidad: "ml" }
+  ],
+  hawaiana: [
+    { producto: "Harina", cantidad: 0.2, unidad: "kg" },
+    { producto: "Queso", cantidad: 0.15, unidad: "kg" },
+    { producto: "Salsa", cantidad: 150, unidad: "ml" }
+  ],
+  caseraespecial: [
+    { producto: "Harina", cantidad: 0.25, unidad: "kg" },
+    { producto: "Queso", cantidad: 0.2, unidad: "kg" },
+    { producto: "Salsa", cantidad: 180, unidad: "ml" }
+  ]
 };
 
-inventario = inventario.map(item => {
-  if (!item.unidad) item.unidad = "unidad";
-  return item;
-});
-localStorage.setItem("inventario", JSON.stringify(inventario));
-
+// ===============================
+// EVENTOS
+// ===============================
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("btnAgregar")?.addEventListener("click", agregarProducto);
-  document.getElementById("btnVender")?.addEventListener("click", venderPizza);
-  document.getElementById("btnReporte")?.addEventListener("click", generarReporte);
-  document.getElementById("buscar")?.addEventListener("keyup", mostrarInventario);
-
+  btnAgregar.onclick = agregarProducto;
+  btnVender.onclick = venderPizza;
+  btnReporte.onclick = generarReporte;
+  buscar.onkeyup = mostrarInventario;
   mostrarInventario();
-  mostrarInventarioPagina();
-  mostrarVentasPagina();
 });
+
+// ===============================
+// FUNCIONES
+// ===============================
+function guardarInventario() {
+  localStorage.setItem("inventario", JSON.stringify(inventario));
+}
 
 function agregarProducto() {
-  const producto = document.getElementById("producto").value.trim();
-  const cantidad = parseFloat(document.getElementById("cantidad").value);
-  const categoria = document.getElementById("categoria").value.trim();
-  const unidad = document.getElementById("unidad")?.value || "unidad";
+  const producto = productoInput.value.trim();
+  const cantidad = parseFloat(cantidadInput.value);
+  const categoria = categoriaInput.value.trim();
+  const unidad = unidadSelect.value;
 
   if (!producto || !cantidad || !categoria) {
     alert("Completa todos los campos");
@@ -53,24 +58,16 @@ function agregarProducto() {
   }
 
   inventario.push({ producto, cantidad, categoria, unidad });
-  localStorage.setItem("inventario", JSON.stringify(inventario));
-
-  document.getElementById("producto").value = "";
-  document.getElementById("cantidad").value = "";
-  document.getElementById("categoria").value = "";
-
+  guardarInventario();
   mostrarInventario();
 }
 
 function mostrarInventario() {
-  const lista = document.getElementById("lista");
-  if (!lista) return;
-
-  const buscar = document.getElementById("buscar").value.toLowerCase();
   lista.innerHTML = "";
+  const texto = buscar.value.toLowerCase();
 
   inventario
-    .filter(item => item.producto.toLowerCase().includes(buscar))
+    .filter(i => i.producto.toLowerCase().includes(texto))
     .forEach((item, index) => {
       const li = document.createElement("li");
       li.innerHTML = `
@@ -82,82 +79,74 @@ function mostrarInventario() {
 }
 
 function eliminarProducto(index) {
-  if (!confirm(`¿Eliminar ${inventario[index].producto}?`)) return;
-
+  if (!confirm("¿Eliminar producto?")) return;
   inventario.splice(index, 1);
-  localStorage.setItem("inventario", JSON.stringify(inventario));
+  guardarInventario();
   mostrarInventario();
 }
 
 function venderPizza() {
-  const tipoPizza = document.getElementById("tipoPizza")?.value;
-  const receta = recetas[tipoPizza];
+  const tipo = tipoPizza.value;
+  const receta = recetas[tipo];
 
   if (!receta) {
     alert("Receta no encontrada");
     return;
   }
 
-  for (let ing in receta) {
-    const item = inventario.find(i => i.producto === ing);
-    if (!item || item.cantidad < receta[ing]) {
-      alert("Ingredientes insuficientes");
+  for (let r of receta) {
+    const prod = inventario.find(
+      i => i.producto === r.producto && i.unidad === r.unidad
+    );
+    if (!prod || prod.cantidad < r.cantidad) {
+      mensaje.textContent = "❌ Ingredientes insuficientes";
       return;
     }
   }
 
-  for (let ing in receta) {
-    const item = inventario.find(i => i.producto === ing);
-    item.cantidad -= receta[ing];
-  }
+  receta.forEach(r => {
+    const prod = inventario.find(
+      i => i.producto === r.producto && i.unidad === r.unidad
+    );
+    prod.cantidad -= r.cantidad;
+  });
 
   ventas.push({
-    pizza: tipoPizza,
+    pizza: tipo,
     fecha: new Date().toLocaleString()
   });
 
-  localStorage.setItem("inventario", JSON.stringify(inventario));
   localStorage.setItem("ventas", JSON.stringify(ventas));
-
+  guardarInventario();
   mostrarInventario();
-  alert("✅ Pizza vendida correctamente");
+  mensaje.textContent = "✅ Pizza vendida";
 }
+
 function generarReporte() {
-  const reporte = document.getElementById("reporte");
-  if (!reporte) return;
-
   reporte.innerHTML = "";
-
-  inventario.forEach(item => {
+  inventario.forEach(i => {
     const li = document.createElement("li");
     li.textContent =
-      item.cantidad < 500
-        ? `⚠ ${item.producto} bajo stock (${item.cantidad} ${item.unidad})`
-        : `${item.producto}: ${item.cantidad} ${item.unidad}`;
+      i.cantidad < 1
+        ? `⚠ ${i.producto} bajo stock`
+        : `${i.producto}: ${i.cantidad} ${i.unidad}`;
     reporte.appendChild(li);
   });
 }
 
-function mostrarInventarioPagina() {
-  const lista = document.getElementById("listaInventarioPagina");
-  if (!lista) return;
+// ===============================
+// ATAJOS INPUTS
+// ===============================
+const productoInput = document.getElementById("producto");
+const cantidadInput = document.getElementById("cantidad");
+const categoriaInput = document.getElementById("categoria");
+const unidadSelect = document.getElementById("unidad");
+const lista = document.getElementById("lista");
+const buscar = document.getElementById("buscar");
+const mensaje = document.getElementById("mensaje");
+const reporte = document.getElementById("reporte");
+const btnAgregar = document.getElementById("btnAgregar");
+const btnVender = document.getElementById("btnVender");
+const btnReporte = document.getElementById("btnReporte");
+const tipoPizza = document.getElementById("tipoPizza");
 
-  lista.innerHTML = "";
-  inventario.forEach(item => {
-    const li = document.createElement("li");
-    li.textContent = `${item.producto} | ${item.cantidad} ${item.unidad} | ${item.categoria}`;
-    lista.appendChild(li);
-  });
-}
-
-function mostrarVentasPagina() {
-  const lista = document.getElementById("listaVentasPagina");
-  if (!lista) return;
-
-  lista.innerHTML = "";
-  ventas.forEach(v => {
-    const li = document.createElement("li");
-    li.textContent = `🍕 ${v.pizza} - ${v.fecha}`;
-    lista.appendChild(li);
-  });
-}
