@@ -1,11 +1,4 @@
-// =======================
-// INVENTARIO
-// =======================
 let inventario = JSON.parse(localStorage.getItem("inventario")) || [];
-
-// =======================
-// RECETAS DE PIZZAS
-// =======================
 const recetas = {
   jamon: {
     Harina: 200,
