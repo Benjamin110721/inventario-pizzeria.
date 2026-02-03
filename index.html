@@ -1,24 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inventario Pizzería</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+
 <h2>🍕 Inventario Pizzería</h2>
 
 <input type="text" id="producto" placeholder="Producto">
 <input type="number" id="cantidad" placeholder="Cantidad">
 <input type="text" id="categoria" placeholder="Categoría">
 
-<button onclick="agregarProducto()">Agregar</button>
+<button id="btnAgregar">Agregar producto</button>
 
-<input type="text" id="buscar" placeholder="Buscar producto..." onkeyup="mostrarInventario()">
+<input type="text" id="buscar" placeholder="Buscar producto">
 
 <ul id="lista"></ul>
-<h3>🍕 Vender Pizza</h3>
 
+<hr>
+
+<h3>🍕 Venta de Pizza</h3>
 <select id="tipoPizza">
-  <option value="jamón">Jamón</option>
-  <option value="extravagante">Extravagante</option>
-  <option value="hongonada">Hongonada</option>
-  <option value="hawaiana">Hawaiana</option>
-  <option value="casera especial">Casera Especial</option>
+  <option value="margarita">Margarita</option>
 </select>
 
-<button onclick="venderPizza()">Vender Pizza</button>
+<button id="btnVender">Vender pizza</button>
 
 <p id="mensaje"></p>
+
+<hr>
+
+<h3>📊 Reporte</h3>
+<button id="btnReporte">Ver reporte</button>
+<ul id="reporte"></ul>
+
+</body>
+</html>
