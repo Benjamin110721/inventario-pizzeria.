@@ -1,7 +1,22 @@
 let inventario = JSON.parse(localStorage.getItem("inventario")) || [];
 
 const recetas = {
-  margarita: {
+  jamón: {
+    Harina: 200,
+    Queso: 150,
+    Salsa: 100
+  }
+ extravagante: {
+    Harina: 200,
+    Queso: 150,
+    Salsa: 100
+  }
+hawaiana: {
+    Harina: 200,
+    Queso: 150,
+    Salsa: 100
+  }
+caseraespecial: {
     Harina: 200,
     Queso: 150,
     Salsa: 100
