@@ -104,3 +104,35 @@ function generarReporte() {
     reporte.appendChild(li);
   });
 }
+function eliminarProducto(index) {
+  const confirmar = confirm(
+    `¿Seguro que deseas eliminar "${inventario[index].producto}" del inventario?`
+  );
+
+  if (!confirmar) return;
+
+  inventario.splice(index, 1);
+  localStorage.setItem("inventario", JSON.stringify(inventario));
+  mostrarInventario();
+}
+const mostrarInventarioOriginal = mostrarInventario;
+
+mostrarInventario = function () {
+  const lista = document.getElementById("lista");
+  const buscar = document.getElementById("buscar").value.toLowerCase();
+
+  lista.innerHTML = "";
+
+  inventario
+    .filter(item => item.producto.toLowerCase().includes(buscar))
+    .forEach((item, index) => {
+      const li = document.createElement("li");
+
+      li.innerHTML = `
+        ${item.producto} | ${item.cantidad} | ${item.categoria}
+        <button onclick="eliminarProducto(${index})">🗑</button>
+      `;
+
+      lista.appendChild(li);
+    });
+};
