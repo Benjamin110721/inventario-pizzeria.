@@ -1,28 +1,37 @@
+// =======================
+// INVENTARIO
+// =======================
 let inventario = JSON.parse(localStorage.getItem("inventario")) || [];
 
+// =======================
+// RECETAS DE PIZZAS
+// =======================
 const recetas = {
-  jamón: {
+  jamon: {
     Harina: 200,
     Queso: 150,
     Salsa: 100
-  }
- extravagante: {
-    Harina: 200,
-    Queso: 150,
-    Salsa: 100
-  }
-hawaiana: {
-    Harina: 200,
-    Queso: 150,
-    Salsa: 100
-  }
-caseraespecial: {
-    Harina: 200,
-    Queso: 150,
-    Salsa: 100
+  },
+  extravagante: {
+    Harina: 250,
+    Queso: 180,
+    Salsa: 120
+  },
+  hawaiana: {
+    Harina: 220,
+    Queso: 160,
+    Salsa: 110
+  },
+  caseraespecial: {
+    Harina: 300,
+    Queso: 200,
+    Salsa: 150
   }
 };
 
+// =======================
+// EVENTOS AL CARGAR
+// =======================
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnAgregar").addEventListener("click", agregarProducto);
   document.getElementById("btnVender").addEventListener("click", venderPizza);
@@ -32,13 +41,16 @@ document.addEventListener("DOMContentLoaded", () => {
   mostrarInventario();
 });
 
+// =======================
+// AGREGAR PRODUCTO
+// =======================
 function agregarProducto() {
   const producto = document.getElementById("producto").value.trim();
   const cantidad = parseInt(document.getElementById("cantidad").value);
   const categoria = document.getElementById("categoria").value.trim();
 
-  if (!producto || !cantidad || !categoria) {
-    alert("Completa todos los campos");
+  if (!producto || isNaN(cantidad) || !categoria) {
+    alert("Completa todos los campos correctamente");
     return;
   }
 
@@ -52,24 +64,55 @@ function agregarProducto() {
   mostrarInventario();
 }
 
+// =======================
+// MOSTRAR INVENTARIO + ELIMINAR
+// =======================
 function mostrarInventario() {
   const lista = document.getElementById("lista");
   const buscar = document.getElementById("buscar").value.toLowerCase();
 
   lista.innerHTML = "";
 
-  inventario
-    .filter(item => item.producto.toLowerCase().includes(buscar))
-    .forEach(item => {
-      const li = document.createElement("li");
-      li.textContent = `${item.producto} | ${item.cantidad} | ${item.categoria}`;
-      lista.appendChild(li);
-    });
+  inventario.forEach((item, index) => {
+    if (!item.producto.toLowerCase().includes(buscar)) return;
+
+    const li = document.createElement("li");
+    li.innerHTML = `
+      ${item.producto} | ${item.cantidad} | ${item.categoria}
+      <button onclick="eliminarProducto(${index})">🗑</button>
+    `;
+    lista.appendChild(li);
+  });
 }
 
-function venderPizza() {
-  const receta = recetas["margarita"];
+// =======================
+// ELIMINAR PRODUCTO
+// =======================
+function eliminarProducto(index) {
+  const confirmar = confirm(
+    `¿Eliminar "${inventario[index].producto}" del inventario?`
+  );
 
+  if (!confirmar) return;
+
+  inventario.splice(index, 1);
+  localStorage.setItem("inventario", JSON.stringify(inventario));
+  mostrarInventario();
+}
+
+// =======================
+// VENDER PIZZA
+// =======================
+function venderPizza() {
+  const tipo = document.getElementById("tipoPizza").value;
+  const receta = recetas[tipo];
+
+  if (!receta) {
+    alert("Receta no encontrada");
+    return;
+  }
+
+  // Verificar ingredientes
   for (let ing in receta) {
     const item = inventario.find(i => i.producto === ing);
     if (!item || item.cantidad < receta[ing]) {
@@ -79,6 +122,7 @@ function venderPizza() {
     }
   }
 
+  // Descontar ingredientes
   for (let ing in receta) {
     const item = inventario.find(i => i.producto === ing);
     item.cantidad -= receta[ing];
@@ -91,6 +135,9 @@ function venderPizza() {
     "✅ Pizza vendida correctamente";
 }
 
+// =======================
+// REPORTE
+// =======================
 function generarReporte() {
   const reporte = document.getElementById("reporte");
   reporte.innerHTML = "";
@@ -104,35 +151,3 @@ function generarReporte() {
     reporte.appendChild(li);
   });
 }
-function eliminarProducto(index) {
-  const confirmar = confirm(
-    `¿Seguro que deseas eliminar "${inventario[index].producto}" del inventario?`
-  );
-
-  if (!confirmar) return;
-
-  inventario.splice(index, 1);
-  localStorage.setItem("inventario", JSON.stringify(inventario));
-  mostrarInventario();
-}
-const mostrarInventarioOriginal = mostrarInventario;
-
-mostrarInventario = function () {
-  const lista = document.getElementById("lista");
-  const buscar = document.getElementById("buscar").value.toLowerCase();
-
-  lista.innerHTML = "";
-
-  inventario
-    .filter(item => item.producto.toLowerCase().includes(buscar))
-    .forEach((item, index) => {
-      const li = document.createElement("li");
-
-      li.innerHTML = `
-        ${item.producto} | ${item.cantidad} | ${item.categoria}
-        <button onclick="eliminarProducto(${index})">🗑</button>
-      `;
-
-      lista.appendChild(li);
-    });
-};
