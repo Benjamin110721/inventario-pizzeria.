@@ -98,7 +98,6 @@ function venderPizza() {
     return;
   }
 
-  // Validar ingredientes
   for (let ing in receta) {
     const item = inventario.find(i => i.producto === ing);
     if (!item || item.cantidad < receta[ing]) {
@@ -107,13 +106,11 @@ function venderPizza() {
     }
   }
 
-  // Descontar ingredientes
   for (let ing in receta) {
     const item = inventario.find(i => i.producto === ing);
     item.cantidad -= receta[ing];
   }
 
-  // Registrar venta
   ventas.push({
     pizza: tipoPizza,
     fecha: new Date().toLocaleString()
