@@ -29,9 +29,6 @@ const recetas = {
   }
 };
 
-// =======================
-// EVENTOS AL CARGAR
-// =======================
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnAgregar").addEventListener("click", agregarProducto);
   document.getElementById("btnVender").addEventListener("click", venderPizza);
@@ -41,9 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
   mostrarInventario();
 });
 
-// =======================
-// AGREGAR PRODUCTO
-// =======================
 function agregarProducto() {
   const producto = document.getElementById("producto").value.trim();
   const cantidad = parseInt(document.getElementById("cantidad").value);
@@ -63,10 +57,6 @@ function agregarProducto() {
 
   mostrarInventario();
 }
-
-// =======================
-// MOSTRAR INVENTARIO + ELIMINAR
-// =======================
 function mostrarInventario() {
   const lista = document.getElementById("lista");
   const buscar = document.getElementById("buscar").value.toLowerCase();
@@ -84,10 +74,6 @@ function mostrarInventario() {
     lista.appendChild(li);
   });
 }
-
-// =======================
-// ELIMINAR PRODUCTO
-// =======================
 function eliminarProducto(index) {
   const confirmar = confirm(
     `¿Eliminar "${inventario[index].producto}" del inventario?`
@@ -99,10 +85,6 @@ function eliminarProducto(index) {
   localStorage.setItem("inventario", JSON.stringify(inventario));
   mostrarInventario();
 }
-
-// =======================
-// VENDER PIZZA
-// =======================
 function venderPizza() {
   const tipo = document.getElementById("tipoPizza").value;
   const receta = recetas[tipo];
@@ -134,10 +116,6 @@ function venderPizza() {
   document.getElementById("mensaje").textContent =
     "✅ Pizza vendida correctamente";
 }
-
-// =======================
-// REPORTE
-// =======================
 function generarReporte() {
   const reporte = document.getElementById("reporte");
   reporte.innerHTML = "";
